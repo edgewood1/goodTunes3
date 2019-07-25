@@ -58,12 +58,12 @@ passport.use(
   "register",
   new LocalStrategy(function(username, password, done) {
     User.findOne({ username: username }).then(currentUser => {
-      // if (err) throw err;
+     
       if (currentUser) {
         //already have user
         console.log("user is ", currentUser);
         // done will go to serializer...
-        done(null, false, { message: "Login: You're already in the system" });
+        done(null, currentUser, "User already registered - you've been logged in" );
       } else {
         // create new user
         var newUser = new User({
@@ -73,14 +73,16 @@ passport.use(
        
         User.createUser(newUser, function(err, user) {
           if (err) throw err;
-          console.log("errr-----> ", err)
-          message = {message: "user created!!"}
-          user.data.message = {message: "user created!!"}
+          // console.log("errr-----> ", err)
+           
+ 
           console.log(user)
-          done(null, user, message);
+          done(null, user, "user created!!");
         });
       }
-    });
+    }).catch(err => {
+      return done(err);
+    })
   })
 );
 
@@ -91,14 +93,14 @@ passport.use(
       console.log("hit passport");
       if (err) throw err;
       if (!user) {
-        return done(null, false, { message: "Unknown User" });
+        return done(null, false, "Unknown User" );
       }
       User.comparePassword(password, user.password, function(err, isMatch) {
         if (err) throw err;
         if (isMatch) {
-          return done(null, user, { message: "your saved playlist" });
+          return done(null, user, "Your saved playlist");
         } else {
-          return done(null, false, { message: "Invalid password - try again" });
+          return done(null, false, "Invalid password - try again");
         }
       });
     });

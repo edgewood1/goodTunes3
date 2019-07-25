@@ -6,10 +6,11 @@ const initState = {
 
   login: false,
   id: 0,
-  message: "Logged Out",
+  message: "",
+  message2: "Log-in to save selections",
   scrapes: [],
-  saveThis: [],
-  allTunes: [{name: "one", source: "one"}, {name: "two", source: "two"} ],
+  showThis: [], 
+  allTunes: [],
   userTunes: [],
   playerID: 0
 };

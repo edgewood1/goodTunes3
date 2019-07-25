@@ -6,10 +6,14 @@ import {fetchPosts} from '../actions'
 
 class Player extends React.Component {
   render() {
+    console.log(this.props)
+   
     return (
       <Container>
         <Header>
           <LargeFont>{this.props.posts.message}</LargeFont>
+          <hr></hr>
+          <LargeFont>{this.props.posts.message2}</LargeFont>
         </Header>
         <Header2>
           {this.props.posts.play ? (

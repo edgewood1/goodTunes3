@@ -1,10 +1,13 @@
-import API from "../utils/API";
 import React from "react";
 import Rating from "react-rating";
-import RateButton from '../components/ratebutton'
+// import RateButton from '../components/ratebutton'
 import {connect } from 'react-redux'; 
-import PlaylistButton from '../components/playListButtons'
+import {fetchPosts, saveTunes} from '../actions';
 // import styles from "./playlist2.css";
+ import _ from 'lodash';
+
+
+import PlayButton from '../components/playButton'
 import {
   Container,
   Header,
@@ -12,132 +15,69 @@ import {
   Buttons,
   LargeFont,
   MedFont,
+  PlayDeleteButton,
   RateDiv
 } from "../assets_css/playList_css";
-import {fetchPosts} from '../actions'
- 
 
-class Books extends React.Component {
- 
 
-  componentDidMount() {
-    this.props.fetchPosts()
+
+ class Books extends React.Component {
+
+  constructor(props) {
+    super(props)
+  
+    if (props.posts.allTunesShow) {
+      props.fetchPosts()
+    }
   }
 
-
-  getPlaylist = () => {
- 
-  };
-
-  random = () => {
- 
-  };
-
-  saveTunes = e => {
- 
-  };
-
-  deleteTunes = e => {
- 
-  };
-
-  updateTunes = e => {
-  
-  };
-
-  playTunes = e => {
- 
-  };
-
-  boundClick4 = (rating, song) => {
- 
-  };
-  getStuff = (rating, song) => {
- 
-   
-  };
-
-  saveRatings = (songId, usersRated, songAvg, songVotes) => {
- 
-  };
-
-  render(props) {
-    
+  render() {
+    var x = this.props.posts.showThis
+    console.log(this.props)
     return (
       <Container>
-      {this.props.posts.allTunes.map(e => (
-          <Header key={this.random()}>
+        {x.length>0 ? x.map(e => 
+          <Header key={_.uniqueId()}>
             <Names>
               <LargeFont>{e.artist}</LargeFont>
               <MedFont> {e.title} </MedFont>
-              {/* <RateButton e={e} />  */}
               <RateDiv>
-        <Rating
-          key={e._id}
-          start={0}
-          step={1}
-          stop={5}
-          usersRated={e.usersRated}
-          average={e.average}
-          votes={e.votes}
-          emptySymbol="glyphicon glyphicon-star-empty"
-          initialRating={e.average}
-          fullSymbol="glyphicon glyphicon-star"
-          onClick={value => this.boundClick4(value, e)}
-        />
-      </RateDiv>
+                <Rating
+                  key={e.id}
+                  start={0}
+                  step={1}
+                  stop={5}
+                  usersRated={e.usersRated}
+                  average={e.average}
+                  votes={e.votes}
+                  emptySymbol="glyphicon glyphicon-star-empty"
+                  initialRating={e.average}
+                  fullSymbol="glyphicon glyphicon-star"
+                  onClick={value => this.boundClick4(value, e)}
+                />
+              </RateDiv>
               <p style={{ padding: "4%", color: "white", fontSize: "1.1em" }}>
                 Votes: {e.votes}
               </p>
             </Names>
             <Buttons>
               <img alt="meaningful" src={e.source} />
-              <button
-                onClick={() => this.playTunes(e)}
-                style={{
-                  margin: "3%",
-                  backgroundColor: "#f5d21f",
-                  width: "75%",
-                  justifyContent: "center",
-                  marginLeft: "15%"
-                }}
-              >
-                Play
-              </button>
+              <PlayButton e={e} /> 
               {this.props.posts.allTunesShow ? (
-                <button
-                  onClick={() => this.saveTunes(e)}
-                  style={{
-                    margin: "3%",
-                    backgroundColor: "#44db0d",
-                    width: "75%",
-                    justifyContent: "center",
-                    marginLeft: "15%"
-                  }}
-                >
+                <PlayDeleteButton onClick={() => this.props.saveTunes(e)}>
                   Save
-                </button>
+                </PlayDeleteButton>
               ) : (
-                <button
-                  onClick={() => this.deleteTunes(e)}
-                  style={{
-                    margin: "3%",
-                    backgroundColor: "#44db0d",
-                    width: "75%",
-                    justifyContent: "center",
-                    marginLeft: "15%"
-                  }}
-                >
-                  {" "}
-                  Delete{" "}
-                </button>
+                <PlayDeleteButton onClick={() => this.deleteTunes(e)}>
+                  Delete 
+                </PlayDeleteButton>
               )}
             </Buttons>
           </Header>
-        ))}
-       
+              ):('')}
       </Container>
-    );
+    )
+    
   }
 }
 
@@ -146,4 +86,4 @@ const mapStateToProps = (state) => {
   console.log(state)
   return {posts: state.posts }
 }
-export default connect(mapStateToProps, {fetchPosts})(Books);
+export default connect(mapStateToProps, {fetchPosts, saveTunes})(Books);

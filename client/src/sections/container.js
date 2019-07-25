@@ -3,8 +3,7 @@ import { Wrapper, Col1, Col2 } from "../assets_css/container_css";
 import PlayList from "./playList";
 import Login from "./login";
 import Player from "./player";
-
-const logInShow = 0
+import {connect } from 'react-redux'; 
 
 class Container extends React.Component {
 
@@ -17,7 +16,7 @@ class Container extends React.Component {
           <Player   />
         </Col1>
         <Col2>
-          {logInShow ? (
+          {this.props.posts.logInShow ? (
             <Login
   
             />
@@ -32,4 +31,9 @@ class Container extends React.Component {
   }
 }
 
-export default Container;
+
+const mapStateToProps = (state) => {
+  console.log(state)
+  return {posts: state.posts }
+}
+export default connect(mapStateToProps )(Container);

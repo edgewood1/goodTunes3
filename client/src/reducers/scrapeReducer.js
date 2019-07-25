@@ -1,36 +1,45 @@
+export default function cleanScrape(state2, action) {
+  state2.scrapes = action.payload.map(e => {
+    //e is the first scrape - make titles consistent
+    if (e.song == undefined) { e.song=e.title.replace(/(\r\n|\n|\r)/gm, "").trim()}
+    // remove white space and returns from both
+    e.artist = e.artist.replace(/(\r\n|\n|\r)/gm, "").trim()
+    e.title = e.title.replace(/(\r\n|\n|\r)/gm, "").trim()
+    return e
+  })
 
-import initState from './initState'
-// this is a db tune
-export default(state = initState, action) => {
-  switch (action.type) {
-    case 'SCRAPE': 
-    // the payload is all the tunes returned from db
-    // it could also have state2 here, add action.payload to it, and return.
-      var state2 = Object.assign({}, state);
-      var newScrapes = []
-      state2.scrapes = []
-      state2.scrapes = action.payload.filter(e => {
+    // old - all tunes
+    // scrapes - scrapes
+
+
+    // loop through all saved Tunes
+    var nogood = []
+    var good =[]
+
+    state2.scrapes.forEach(es => {
+      console.log(es)
+      state2.allTunes.forEach(e => {
+        //clean all items in allTunes
+        e.artist = e.artist.replace(/(\r\n|\n|\r)/gm, "").trim()
+        e.title = e.title.replace(/(\r\n|\n|\r)/gm, "").trim()
         console.log(e)
-        if (e.song == undefined) { e.song=e.title.trim()}
-        e.artist = e.artist.trim()
-        console.log(e.song.trim())
-        console.log(state2.allTunes)
-          state2.allTunes.forEach(main => {
-            // if ((main.artist !== e.artist) && (main.song !== e.song)) {
-              console.log(`comparing ${main.artist} with ${e.artist}`)
-              if (main.artist !== e.artist) {
-              newScrapes.push(e)
-            }
-            return newScrapes;
-          })
-       
-      });
-      console.log(state2.scrapes)
-      return state2
-      
+        if((e.artist == es.artist)&&(e.title == es.title)) {
+          nogood.push(es)
+        }
+      })
+    })
+    console.log(nogood)
 
-      
-    default:
-      return state;
-  }
+    nogood.forEach(main =>   
+      state2.scrapes = state2.scrapes.filter(e=> e.artist!=main.artist)  
+    )
+
+    console.log(state2.scrapes)
+    state2.showThis = state2.scrapes;
+    state2.message = `You scraped ${state2.scrapes.length} new songs`
+    console.log(state2.scrapes)
+
+    return state2
+
 }
+

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import {connect } from 'react-redux';
-import API from "../utils/API";
-import {fetchScrape, saveTunes} from '../actions'
+
+import {fetchScrape, addScrape, getPlaylist, getScrapes, getUserTunes, login} from '../actions'
  
 import {Wrapper, HeaderWrapper, Header, Body, Button} from '../assets_css/nav_css'
 
@@ -13,69 +13,48 @@ import {Wrapper, HeaderWrapper, Header, Body, Button} from '../assets_css/nav_cs
     // 1.. send message to state: scraping... 
 
     console.log("scrape")
-    // API.scrape()
-    //   .then(res => {
-    //     this.addScrapeToDb(res["data"]);
-    //   })
-    //   .catch(err => console.log(err));
-    this.props.fetchScrape().then(()=> {
-      console.log(this.props.posts.scrapes)
-      console.log(this.props.posts.allTunes)
-    //   this.props.saveTunes(this.props.posts.scrapes).then(res=> {
-    //     console.log(res)
-    //   .catch(err => console.log(err))
-    // })
-    })
-  //   .then(res1 => {
-  //     console.log(res1)
-  //     this.props.saveTunes(this.props.scrapes).then(res=> {
-  //       console.log(res)
-  //     .catch(err => console.log(err))
-  //   })
-  //   console.log(this.props)
+    if (this.props.posts.scrapes.length >0) {
+      console.log("getting scrapes already there")
+      this.props.getScrapes()
+    } else {
+      this.props.fetchScrape().then(()=> {
+        console.log("fetch, then add")  
+        this.props.getScrapes()
+      
+      })
+    }
  
-
-  // })
 }
 
   addScrapeToDb = () => {
-    
-        this.props.saveTunes(this.props.scrapes).then(res=> {
+        this.props.addScrape(this.props.scrapes).then(res=> {
         console.log(res)
       .catch(err => console.log(err))
     })
     // add to state
   };
 
-  getPlaylist = () => {
-
-  };
-
- 
-
   // 2 - see db tunes
-
   getAllTunes = (props) => {
-    // change state so that logINShow 0, alltunesshow - 1, message - all available tunes
-    // hwo to change the state? 
-    // mapstate to dispatch
-    // console.log(this.props)
-  
-    // this.props.changeState("allTunesShow")
-  };
-  // 3. get user tunes
 
-  getUserTunes = () => {
- 
+    this.props.getPlaylist() 
+  };
+
+  // 3. get user tunes
+  LogInCheck = () => {
+
+    this.props.posts.login ? this.props.getUserTunes() : this.props.login(this.props.posts);
+    console.log(this.props.posts.logInShow)
   };
 
   // 4 log out
 
   handleLogOut = () => {
- 
+    
   };
 
   render() {
+    console.log(this.props)
     return (
       <Wrapper>
         <HeaderWrapper>
@@ -93,7 +72,7 @@ import {Wrapper, HeaderWrapper, Header, Body, Button} from '../assets_css/nav_cs
               See Db Tunes
             </Button>
 
-            <Button onClick={() => this.getUserTunes(this.props)}>
+            <Button onClick={() => this.LogInCheck()}>
               Saved PlayList
             </Button>
 
@@ -105,9 +84,9 @@ import {Wrapper, HeaderWrapper, Header, Body, Button} from '../assets_css/nav_cs
   }
 }
 const mapStateToProps = (state) => {
-  return { fetchScrape: state.fetchScrape, saveTunes: state.saveTunes, posts: state.posts }
+  return {  posts: state.posts  }
 }
 
-export default connect(mapStateToProps, {fetchScrape, saveTunes} )(Nav)
+export default connect(mapStateToProps, {getUserTunes, fetchScrape, addScrape, getPlaylist, getScrapes, login} )(Nav)
 
  

@@ -7,6 +7,7 @@ import {
 import API from "../utils/API";
 import {Container, Row, Input, LogButton} from '../assets_css/login_css'
 import {connect } from 'react-redux';
+import {login2} from '../actions'
 
 class Login extends React.Component {
   state = {
@@ -33,31 +34,13 @@ class Login extends React.Component {
     });
     var data = {
       username: this.state.username,
-      password: this.state.password
+      password: this.state.password, 
+      event: event.target.value
     };
 
     console.log(event.target.value)
-
-    event.target.value === "Login"
-      ? API.login(data).then(res => {
-          if (res.data._id) {
-            this.getTunes(res.data._id);
-          } else {
-            this.props.changeState({
-              message: res.data.message,
-              login: false
-            });
-          }
-        })
-      : API.register(data).then(res => {
-        console.log(res)
-          this.props.changeState({
-            message: res.data.message.message,
-            id: res.data.user._id,
-            login: true,
-            db: false
-          });
-        });
+    this.props.login2(data)
+    
   };
 
   googleLogin = e => {
@@ -74,27 +57,27 @@ class Login extends React.Component {
       });
   };
 
-  getTunes = id => {
-    API.getSavedTunes(id).then(res => {
-      var message;
-      res.data.message
-        ? (message = res.data.message)
-        : (message = "You have " + res.data.length + " saved tunes.");
-      this.props.changeState({
-        message: message,
-        login: true,
-        id: id,
-        logInShow: 0,
-        allTunesShow: 0,
-        userTunes: res.data
-      });
-    });
-  };
+  // getTunes = id => {
+  //   API.getSavedTunes(id).then(res => {
+  //     var message;
+  //     res.data.message
+  //       ? (message = res.data.message)
+  //       : (message = "You have " + res.data.length + " saved tunes.");
+  //     this.props.changeState({
+  //       message: message,
+  //       login: true,
+  //       id: id,
+  //       logInShow: 0,
+  //       allTunesShow: 0,
+  //       userTunes: res.data
+  //     });
+  //   });
+  // };
 
  
 
   render(props) {
-    console.log(this.props.allTunes)
+    console.log(this.props )
     return (
       <Container>
         <form>
@@ -118,6 +101,7 @@ class Login extends React.Component {
               onChange={this.handleInputChange}
             />
           </Row>
+          {/* login */}
           <Row>
             <LogButton
               value="Login"
@@ -125,6 +109,7 @@ class Login extends React.Component {
             >
               Login
             </LogButton>
+            {/* register */}
             <LogButton
               value="Register"
               onClick={this.handleLogin}
@@ -144,7 +129,7 @@ class Login extends React.Component {
 
  
 const mapStateToProps = (state) => {
-  return { allTunes: state.getTunes }
+  return { posts: state.posts }
 }
 
-export default connect(mapStateToProps)(Login)
+export default connect(mapStateToProps, {login2})(Login)

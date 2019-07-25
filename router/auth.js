@@ -19,24 +19,29 @@ router.get("/isLogged", (req, res) => {
 
 router.post("/register", function(req, res, next) {
   // does passport take username from req.body?
+  console.log('registering')
   console.log(req.body)
   passport.authenticate("register", function(err, user, info) {
     if (err) {
       return next(err);
     }
+    // if error
     if (!user) {
       return res.send(info);
     }
-    req.login(user, function(err) {
-      if (err) {
-        return next(err);
-      }
-      console.log(info)
-      user.hello = "hello";
-      user.message = info;
-      console.log("final message ==> ", user)
-      return res.send({user: user, message: info});
-    });
+    // auto login? 
+    user.message = info;
+    return res.send({user: user, message: info})
+    // req.login(user, function(err) {
+    //   if (err) {
+    //     return next(err);
+    //   }
+    //   console.log("info - ", info)
+    //   user.hello = "hello";
+    //   user.message = info;
+    //   console.log("final message ==> ", user)
+    //   return res.send({user: user, message: info});
+    // });
   })(req, res, next);
 });
 
@@ -50,14 +55,16 @@ router.post("/login", function(req, res, next) {
     if (!user) {
       return res.send(info);
     }
-    req.login(user, function(err) {
-      if (err) {
-        return next(err);
-      }
+    // req.login(user, function(err) {
+    //   if (err) {
+    //     return next(err);
+    //   }
       // res.redirect("/logged");
-      user.message = info.message;
-      return res.send(user);
-    });
+      // user.message = info.message;
+      return res.send({user: user, message: info})
+
+      // return res.send(user);
+    // });
   })(req, res, next);
 });
 

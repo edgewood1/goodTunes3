@@ -32,6 +32,14 @@ export const Buttons = styled.div`
   align-content: center;
 `;
 
+export const PlayDeleteButton = styled.button`
+  margin: "3%",
+  backgroundColor: "#44db0d",
+  width: "75%",
+  justifyContent: "center",
+  marginLeft: "15%"
+`
+
 export const LargeFont = styled.div`
   font-size: 1.5em;
   padding: 2%;
